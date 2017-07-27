@@ -37,6 +37,7 @@
 #include <util/util.hpp>
 
 #include <QPointer>
+#include "websocket-control.hpp"
 
 class QMessageBox;
 class QListWidgetItem;
@@ -112,6 +113,42 @@ class OBSBasic : public OBSMainWindow {
 		DropType_Media,
 		DropType_Html
 	};
+
+/* ##################################################
+#             Changes for Mconf Deskshare           #
+##################################################### */
+
+private:
+	void deskshare_ConfigSettings(QString path, QString url,
+		int width, int height, int scaled_width, int scaled_height, int fps, int bitrate);
+	void deskshare_ConfigDisplayId(int displayid);
+	void deskshare_ConfigCaptureMouse(bool captureMouse);
+	void deskshare_ConfigVideo(int w, int h, int dw, int dh);
+	void StreamStarted(obs_output_t *output);
+	void StreamStopped();
+
+	QPointer<QTimer> streamMonitorTimer;
+	bool streamActive = false;
+	QPointer<WebsocketControl> wsControl = nullptr;
+	void InitWebsocketControl();
+	bool showSourcePropertiesWindow;
+
+signals:
+	void signal_StreamStarted();
+	void signal_StreamStopped();
+
+public slots:
+	void onSignal_StartStreaming(QString url, QString path, int width,
+		int height, int scaled_width, int scaled_height, int fps, int bitrate);
+	void onSignal_TrayConfig(int displayid, bool captureMouse);
+	void onSignal_TrayConfigInit(int *display, bool *captureMouse);
+	void ToggleVisibility();
+	void SetMuted(bool muted);
+
+private slots:
+	void StreamUpdate();
+
+/* ################################################## */
 
 private:
 	obs_frontend_callbacks *api = nullptr;
