@@ -29,7 +29,14 @@
 #include <memory>
 #include <vector>
 
+#include <QtWebSockets/QtWebSockets>
+#include <QtWebSockets/qwebsocket.h>
+#include <QtNetwork/QtNetwork>
+#include <QtNetwork/qhostaddress.h>
+#include <QtWebSockets/qwebsocketserver.h>
+
 #include "window-main.hpp"
+#include "obs-tray.hpp"
 
 std::string CurrentTimeString();
 std::string CurrentDateTimeString();
@@ -67,6 +74,7 @@ private:
 	OBSContext                     obsContext;
 	QPointer<OBSMainWindow>        mainWindow;
 	profiler_name_store_t          *profilerNameStore = nullptr;
+	OBSTray                        *tray;
 
 	os_inhibit_t                   *sleepInhibitor = nullptr;
 	int                            sleepInhibitRefs = 0;
@@ -158,4 +166,5 @@ static inline int GetProfilePath(char *path, size_t size, const char *file)
 
 extern bool opt_start_streaming;
 extern bool opt_start_recording;
+extern bool opt_hidden;
 extern std::string opt_starting_scene;
